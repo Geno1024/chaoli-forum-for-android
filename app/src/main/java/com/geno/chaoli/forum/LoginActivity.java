@@ -1,6 +1,7 @@
 package com.geno.chaoli.forum;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,7 +25,9 @@ public class LoginActivity extends Activity
 	protected EditText username, password;
 	protected Button submit;
 
-	class loginHandler extends Handler
+	static Context context = null;
+
+	static class loginHandler extends Handler
 	{
 		// WeakReference to the outer class's instance.
 		private WeakReference<LoginActivity> mOuter;
@@ -42,7 +45,7 @@ public class LoginActivity extends Activity
 				switch (msg.what)
 				{
 					case 0:
-						Toast.makeText(LoginActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+						Toast.makeText(context, msg.obj.toString(), Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -56,6 +59,7 @@ public class LoginActivity extends Activity
 		setContentView(R.layout.login_layout);
 		setTitle(R.string.action_login);
 		handler = new loginHandler(this);
+		context = getApplicationContext();
 		username = (EditText) findViewById(R.id.activity_login_username);
 		password = (EditText) findViewById(R.id.activity_login_password);
 		submit = (Button) findViewById(R.id.activity_login_submit);
