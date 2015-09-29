@@ -25,7 +25,7 @@ public class LoginActivity extends Activity
 	protected EditText username, password;
 	protected Button submit;
 
-	static Context context = null;
+	/*static Context context = null;
 
 	static class loginHandler extends Handler
 	{
@@ -33,7 +33,7 @@ public class LoginActivity extends Activity
 		private WeakReference<LoginActivity> mOuter;
 		public loginHandler(LoginActivity activity)
 		{
-			mOuter = new WeakReference<LoginActivity>(activity);
+			mOuter = new WeakReference<>(activity);
 		}
 
 		public void handleMessage(Message msg)
@@ -45,21 +45,37 @@ public class LoginActivity extends Activity
 				switch (msg.what)
 				{
 					case 0:
-						Toast.makeText(context, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+						try
+						{
+							URL url = new URL("https://chaoli.club");
+							URLConnection c = url.openConnection();
+							c.setConnectTimeout(10000);
+							c.setReadTimeout(10000);
+							InputStream i = c.getInputStream();
+							DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+							DocumentBuilder builder = factory.newDocumentBuilder();
+							Document doc = builder.parse(i);
+							String test = doc.getElementById("conversations").getElementsByTagName("ul").item(0).getChildNodes().item(0).getChildNodes().item(1).getNodeValue();
+							Toast.makeText(context, test, Toast.LENGTH_SHORT).show();
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
 				}
 			}
 		}
 	}
 
-	private loginHandler handler;
+	private loginHandler handler;*/
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_layout);
 		setTitle(R.string.action_login);
-		handler = new loginHandler(this);
-		context = getApplicationContext();
+		/*handler = new loginHandler(this);
+		context = getApplicationContext();*/
 		username = (EditText) findViewById(R.id.activity_login_username);
 		password = (EditText) findViewById(R.id.activity_login_password);
 		submit = (Button) findViewById(R.id.activity_login_submit);
@@ -68,36 +84,7 @@ public class LoginActivity extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				Thread t = new Thread
-				(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							try
-							{
-								URL url = new URL("https://chaoli.club");
-								URLConnection c = url.openConnection();
-								c.setConnectTimeout(10000);
-								c.setReadTimeout(10000);
-								InputStream i = c.getInputStream();
-								DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-								DocumentBuilder builder = factory.newDocumentBuilder();
-								Document doc = builder.parse(i);
-								String test = doc.getElementById("conversations").getElementsByTagName("ul").item(0).getChildNodes().item(0).getChildNodes().item(1).getNodeValue();
-								Message m = new Message();
-								m.what = 0;
-								m.obj = test;
-								handler.sendMessage(m);
-							}
-							catch (Exception e)
-							{
-								e.printStackTrace();
-							}
-						}
-					}
-				);
-				t.start();
+				Toast.makeText(LoginActivity.this, Methods.Network.chkAvailable(LoginActivity.this) + " " + Methods.Network.chkSwitchOpen(LoginActivity.this), Toast.LENGTH_SHORT).show();
 			}
 		};
 		submit.setOnClickListener(login);
@@ -107,6 +94,6 @@ public class LoginActivity extends Activity
 	protected void onDestroy()
 	{
 		super.onDestroy();
-		handler.removeCallbacksAndMessages(null);
+		//handler.removeCallbacksAndMessages(null);
 	}
 }

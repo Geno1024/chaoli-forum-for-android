@@ -6,9 +6,18 @@ import android.net.NetworkInfo;
 
 public final class Methods
 {
-	public static boolean chkNetwork(Context context)
+	public static final class Network
 	{
-		NetworkInfo n = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-		return n.isConnected();
+		public static boolean chkSwitchOpen(Context context)
+		{
+			NetworkInfo n = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+			return n.isConnected();
+		}
+
+		public static boolean chkAvailable(Context context)
+		{
+			NetworkInfo n = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+			return n.isAvailable();
+		}
 	}
 }
