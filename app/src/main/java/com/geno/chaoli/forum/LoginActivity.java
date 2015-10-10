@@ -25,57 +25,71 @@ public class LoginActivity extends Activity
 	protected EditText username, password;
 	protected Button submit;
 
-	/*static Context context = null;
-
-	static class loginHandler extends Handler
+	private class LoginHandler extends Handler
 	{
-		// WeakReference to the outer class's instance.
-		private WeakReference<LoginActivity> mOuter;
-		public loginHandler(LoginActivity activity)
+		private final WeakReference<LoginActivity> loginActivity;
+
+		public LoginHandler(LoginActivity activity)
 		{
-			mOuter = new WeakReference<>(activity);
+			loginActivity = new WeakReference<>(activity);
 		}
 
+		@Override
 		public void handleMessage(Message msg)
 		{
-			LoginActivity outer = mOuter.get();
-			if (outer != null)
+			super.handleMessage(msg);
+			LoginActivity activity = loginActivity.get();
+			if (activity != null)
 			{
-				// Do something with outer as your wish.
 				switch (msg.what)
 				{
 					case 0:
-						try
-						{
-							URL url = new URL("https://chaoli.club");
-							URLConnection c = url.openConnection();
-							c.setConnectTimeout(10000);
-							c.setReadTimeout(10000);
-							InputStream i = c.getInputStream();
-							DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-							DocumentBuilder builder = factory.newDocumentBuilder();
-							Document doc = builder.parse(i);
-							String test = doc.getElementById("conversations").getElementsByTagName("ul").item(0).getChildNodes().item(0).getChildNodes().item(1).getNodeValue();
-							Toast.makeText(context, test, Toast.LENGTH_SHORT).show();
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
+						new Thread(runnable).start();
+						break;
+					case 1:
+						Bundle data = msg.getData();
+						Toast.makeText(LoginActivity.this, data.getString("value"), Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
 	}
 
-	private loginHandler handler;*/
+	private LoginHandler handler = new LoginHandler(this);
+
+	Runnable runnable = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			try
+			{
+				URL url = new URL("https://chaoli.club");
+				URLConnection c = url.openConnection();
+				c.setConnectTimeout(10000);
+				c.setReadTimeout(10000);
+				InputStream i = c.getInputStream();
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder = factory.newDocumentBuilder();
+				Document doc = builder.parse(i);
+				String test = doc.getElementById("conversations").getElementsByTagName("ul").item(0).getChildNodes().item(0).getChildNodes().item(1).getNodeValue();
+				Message msg = new Message();
+				Bundle data = new Bundle();
+				data.putString("value", test);
+				msg.setData(data);
+				msg.what = 1;
+				handler.sendMessage(msg);
+			}
+			catch (Exception e)
+			{e.printStackTrace();}
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_layout);
 		setTitle(R.string.action_login);
-		/*handler = new loginHandler(this);
-		context = getApplicationContext();*/
 		username = (EditText) findViewById(R.id.activity_login_username);
 		password = (EditText) findViewById(R.id.activity_login_password);
 		submit = (Button) findViewById(R.id.activity_login_submit);
@@ -84,7 +98,7 @@ public class LoginActivity extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				Toast.makeText(LoginActivity.this, Methods.Network.chkAvailable(LoginActivity.this) + " " + Methods.Network.chkSwitchOpen(LoginActivity.this), Toast.LENGTH_SHORT).show();
+				handler.sendEmptyMessage(0);
 			}
 		};
 		submit.setOnClickListener(login);
