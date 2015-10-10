@@ -10,7 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.w3c.dom.Document;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -20,6 +21,7 @@ import java.net.URLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+@SuppressWarnings("HandlerLeak")
 public class LoginActivity extends Activity
 {
 	protected EditText username, password;
@@ -47,8 +49,7 @@ public class LoginActivity extends Activity
 						new Thread(runnable).start();
 						break;
 					case 1:
-						Bundle data = msg.getData();
-						Toast.makeText(LoginActivity.this, data.getString("value"), Toast.LENGTH_SHORT).show();
+						Toast.makeText(LoginActivity.this, msg.getData().getString("value"), Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -63,7 +64,8 @@ public class LoginActivity extends Activity
 		{
 			try
 			{
-				URL url = new URL("https://chaoli.club");
+				Document doc = Jsoup.connect("https://chaoli.club").get();
+				/*URL url = new URL("https://chaoli.club");
 				URLConnection c = url.openConnection();
 				c.setConnectTimeout(10000);
 				c.setReadTimeout(10000);
@@ -77,7 +79,7 @@ public class LoginActivity extends Activity
 				data.putString("value", test);
 				msg.setData(data);
 				msg.what = 1;
-				handler.sendMessage(msg);
+				handler.sendMessage(msg);*/
 			}
 			catch (Exception e)
 			{e.printStackTrace();}
