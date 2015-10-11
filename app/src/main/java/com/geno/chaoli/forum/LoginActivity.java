@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -65,21 +69,9 @@ public class LoginActivity extends Activity
 			try
 			{
 				Document doc = Jsoup.connect("https://chaoli.club").get();
-				/*URL url = new URL("https://chaoli.club");
-				URLConnection c = url.openConnection();
-				c.setConnectTimeout(10000);
-				c.setReadTimeout(10000);
-				InputStream i = c.getInputStream();
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder builder = factory.newDocumentBuilder();
-				Document doc = builder.parse(i);
-				String test = doc.getElementById("conversations").getElementsByTagName("ul").item(0).getChildNodes().item(0).getChildNodes().item(1).getNodeValue();
-				Message msg = new Message();
-				Bundle data = new Bundle();
-				data.putString("value", test);
-				msg.setData(data);
-				msg.what = 1;
-				handler.sendMessage(msg);*/
+				Elements el = doc.select("strong.title");;
+				for (Element e : el)
+				Log.i("Elements", e.text().trim());
 			}
 			catch (Exception e)
 			{e.printStackTrace();}
