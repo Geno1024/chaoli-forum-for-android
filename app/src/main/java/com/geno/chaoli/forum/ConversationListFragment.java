@@ -86,9 +86,9 @@ public class ConversationListFragment extends Fragment
 
 	private static final String ARG_SECTION_NUMBER = "section_number";
 
-	public static PlaceholderFragment newInstance(int sectionNumber)
+	public static ConversationListFragment newInstance(int sectionNumber)
 	{
-		PlaceholderFragment fragment = new PlaceholderFragment();
+		ConversationListFragment fragment = new ConversationListFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 		fragment.setArguments(args);
