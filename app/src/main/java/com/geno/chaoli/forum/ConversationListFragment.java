@@ -1,6 +1,7 @@
 package com.geno.chaoli.forum;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,8 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.geno.view.ConversationView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,9 +26,12 @@ import java.lang.ref.WeakReference;
 @SuppressWarnings("HandlerLeak")
 public class ConversationListFragment extends Fragment
 {
-	public String[] conversationList = new String[/*SettingsConstants.getConvPerPage(getActivity())*/50];
+	public String[] conversationTitleList = new String[/*SettingsConstants.getConvPerPage(getActivity())*/50];
+	public String[] conversationSumList = new String[50];
+	public String[] conversationAuthorList = new String[51];
+	public Drawable[] conversationAvatarList = new Drawable[50];
 
-	public TextView[] conversationViewList = new TextView[50];
+	public ConversationView[] conversationViewList = new ConversationView[50];
 	private class ConversationListHandler extends Handler
 	{
 		private final WeakReference<MainActivity> conversationListActivity;
@@ -50,8 +55,10 @@ public class ConversationListFragment extends Fragment
 					break;
 				case 2:
 					Log.v("Draw", "Start");
-					for (int i = 0; i < conversationList.length; i++)
-						conversationViewList[i].setText(conversationList[i]);
+					for (int i = 0; i < conversationTitleList.length; i++)
+					{
+						conversationViewList[i].setConvTitle(conversationTitleList[i]).setConvSum(conversationSumList[i]).setAuthor(conversationAuthorList[i]).setAvatar(conversationAvatarList[i]);
+					}
 					Log.v("Draw", "End");
 			}
 		}
@@ -69,12 +76,32 @@ public class ConversationListFragment extends Fragment
 				Log.v("Network", "Start");
 				Document doc = Jsoup.connect("https://chaoli.club").timeout(30000).get();
 				Log.v("Network", "Finish");
-				Elements el = doc.select("strong.title");
+				Elements titles = doc.select("strong.title");
+				Elements sums = doc.select("div.excerpt");
+				Elements authors = doc.select("span.lastPostMember");
+				Elements avatar = doc.select("img.avatar");
 				int i = 0;
-				for (Element e : el)
+				for (Element e : titles)
 				{
-					Log.v("conversationList", i + ": " + e.text().trim());
-					conversationList[i] = e.text().trim();
+					conversationTitleList[i] = e.text().trim();
+					i++;
+				}
+				i = 0;
+				for (Element e : sums)
+				{
+					conversationSumList[i] = e.text().trim();
+					i++;
+				}
+				i = 0;
+				for (Element e : authors)
+				{
+					if (i % 2 == 0)conversationAuthorList[i / 2] = e.text().trim();
+					i++;
+				}
+				i = 0;
+				for (Element e : avatar)
+				{
+					if (i % 2 == 0)conversationAvatarList[i / 2] = Methods.getDrawableByUrl(e.absUrl("src"));
 					i++;
 				}
 				handler.sendEmptyMessage(2);
@@ -107,7 +134,7 @@ public class ConversationListFragment extends Fragment
 		s.addView(l);
 		for (int i = 0; i < 50; i++)
 		{
-			conversationViewList[i] = new TextView(getActivity());
+			conversationViewList[i] = new ConversationView(getActivity());
 			l.addView(conversationViewList[i], ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		}
 		container.addView(s);
