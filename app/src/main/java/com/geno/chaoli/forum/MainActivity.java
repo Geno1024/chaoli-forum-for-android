@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 		switch (position)
 		{
 			case 0:
-				Log.v("m", "m");
 				fragmentManager.beginTransaction()
 						.replace(R.id.container, ConversationListFragment.newInstance(position + 1))
 						.commit();
