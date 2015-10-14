@@ -5,4 +5,7 @@
 	<string name="action_login">登录</string>
 	<string name="activity_login_username">账号</string>
 	<string name="activity_login_password">密码</string>
+	<string name="avatar">头像</string>
+	<string name="convTitileDesc">帖子标题</string>
+	<string name="convSumDesc">帖子简介</string>
 </resources>

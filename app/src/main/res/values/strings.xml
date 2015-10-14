@@ -14,4 +14,7 @@
 	<string name="action_login">Login</string>
 	<string name="activity_login_username">Username</string>
 	<string name="activity_login_password">Password</string>
+	<string name="avatar">avatar</string>
+	<string name="convTitileDesc">Conversation Title</string>
+	<string name="convSumDesc">Conversation Summary</string>
 </resources>
