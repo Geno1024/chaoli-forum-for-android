@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.geno.view.ConversationView;
+import com.unknown.TextDrawable;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,8 +29,10 @@ public class ConversationListFragment extends Fragment
 {
 	public String[] conversationTitleList = new String[/*SettingsConstants.getConvPerPage(getActivity())*/50];
 	public String[] conversationSumList = new String[50];
-	public String[] conversationAuthorList = new String[51];
+	public String[] conversationAuthorList = new String[50];
 	public Drawable[] conversationAvatarList = new Drawable[50];
+
+	public ViewGroup cont;
 
 	public ConversationView[] conversationViewList = new ConversationView[50];
 
@@ -54,13 +57,14 @@ public class ConversationListFragment extends Fragment
 					new Thread(runnable).start();
 					break;
 				case 1:
-					Toast.makeText(getActivity(), msg.getData().getString("value"), Toast.LENGTH_SHORT).show();
+					cont.removeAllViews();
 					break;
 				case 2:
-
 					Log.v("Draw", "Start");
 					for (int i = 0; i < conversationTitleList.length; i++)
 					{
+						conversationViewList[i] = new ConversationView(getActivity());
+						l.addView(conversationViewList[i], ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 						conversationViewList[i].setConvTitle(conversationTitleList[i]).setConvSum(conversationSumList[i]).setAuthor(conversationAuthorList[i]).setAvatar(conversationAvatarList[i]);
 					}
 					Log.v("Draw", "End");
@@ -83,14 +87,27 @@ public class ConversationListFragment extends Fragment
 				Elements titles = doc.select("strong.title");
 				Elements sums = doc.select("div.excerpt");
 				Elements authors = doc.select("span.lastPostMember");
-				Elements avatar = doc.select("img.avatar");
+				Elements avatar = doc.select("img.avatar, span.avatar");
+				Log.v("count", titles.size() + ", " + sums.size() + ", " + authors.size() + ", " + avatar.size());
 				for (int i = 0; i < 50; i++)
 				{
 					conversationTitleList[i] = titles.get(i).text().trim();
 					conversationSumList[i] = sums.get(i).text().trim();
 					conversationAuthorList[i] = authors.get(i * 2).text().trim();
-					conversationAvatarList[i] = Methods.getDrawableByUrl(avatar.get(i * 2).absUrl("src"));
+					Element r = avatar.get(i * 2);
+					String g = r.absUrl("src");
+					if (g.equals(""))
+					{
+						TextDrawable t = new TextDrawable(getActivity());
+						t.setText(r.text().trim());
+						conversationAvatarList[i] = t;
+					}
+					else
+					{
+						conversationAvatarList[i] = Methods.getDrawableByUrl(avatar.get(i * 2).absUrl("src"));
+					}
 				}
+				//handler.sendEmptyMessage(1);
 				handler.sendEmptyMessage(2);
 			}
 			catch (Exception e)
@@ -119,11 +136,7 @@ public class ConversationListFragment extends Fragment
 		l = new LinearLayout(getActivity());
 		l.setOrientation(LinearLayout.VERTICAL);
 		s.addView(l);
-		for (int i = 0; i < 50; i++)
-		{
-			conversationViewList[i] = new ConversationView(getActivity());
-			l.addView(conversationViewList[i], ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-		}
+		cont = container;
 		container.addView(s);
 		handler.sendEmptyMessage(0);
 		return rootView;
