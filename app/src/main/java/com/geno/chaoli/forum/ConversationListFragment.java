@@ -32,6 +32,9 @@ public class ConversationListFragment extends Fragment
 	public Drawable[] conversationAvatarList = new Drawable[50];
 
 	public ConversationView[] conversationViewList = new ConversationView[50];
+
+	public ScrollView s;
+	public LinearLayout l;
 	private class ConversationListHandler extends Handler
 	{
 		private final WeakReference<MainActivity> conversationListActivity;
@@ -54,6 +57,7 @@ public class ConversationListFragment extends Fragment
 					Toast.makeText(getActivity(), msg.getData().getString("value"), Toast.LENGTH_SHORT).show();
 					break;
 				case 2:
+
 					Log.v("Draw", "Start");
 					for (int i = 0; i < conversationTitleList.length; i++)
 					{
@@ -80,29 +84,12 @@ public class ConversationListFragment extends Fragment
 				Elements sums = doc.select("div.excerpt");
 				Elements authors = doc.select("span.lastPostMember");
 				Elements avatar = doc.select("img.avatar");
-				int i = 0;
-				for (Element e : titles)
+				for (int i = 0; i < 50; i++)
 				{
-					conversationTitleList[i] = e.text().trim();
-					i++;
-				}
-				i = 0;
-				for (Element e : sums)
-				{
-					conversationSumList[i] = e.text().trim();
-					i++;
-				}
-				i = 0;
-				for (Element e : authors)
-				{
-					if (i % 2 == 0)conversationAuthorList[i / 2] = e.text().trim();
-					i++;
-				}
-				i = 0;
-				for (Element e : avatar)
-				{
-					if (i % 2 == 0)conversationAvatarList[i / 2] = Methods.getDrawableByUrl(e.absUrl("src"));
-					i++;
+					conversationTitleList[i] = titles.get(i).text().trim();
+					conversationSumList[i] = sums.get(i).text().trim();
+					conversationAuthorList[i] = authors.get(i * 2).text().trim();
+					conversationAvatarList[i] = Methods.getDrawableByUrl(avatar.get(i * 2).absUrl("src"));
 				}
 				handler.sendEmptyMessage(2);
 			}
@@ -128,8 +115,8 @@ public class ConversationListFragment extends Fragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-		ScrollView s = new ScrollView(getActivity());
-		LinearLayout l = new LinearLayout(getActivity());
+		s = new ScrollView(getActivity());
+		l = new LinearLayout(getActivity());
 		l.setOrientation(LinearLayout.VERTICAL);
 		s.addView(l);
 		for (int i = 0; i < 50; i++)

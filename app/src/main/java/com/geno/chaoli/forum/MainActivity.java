@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 			case 2:
 				startActivity(new Intent(MainActivity.this, LoginActivity.class));
 				break;
-			default:
+			case 1:
 				fragmentManager.beginTransaction()
 						.replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
 						.commit();
