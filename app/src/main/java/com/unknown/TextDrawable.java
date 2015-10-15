@@ -97,6 +97,7 @@ public class TextDrawable extends Drawable {
 		mTextBounds = new Rect();
 		//Paint to use for the text
 		mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+		mTextPaint.setColor(0XFFE0E0E0);
 		mTextPaint.density = mResources.getDisplayMetrics().density;
 		mTextPaint.setDither(true);
 

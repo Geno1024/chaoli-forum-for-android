@@ -99,6 +99,7 @@ public class ConversationListFragment extends Fragment
 					if (g.equals(""))
 					{
 						TextDrawable t = new TextDrawable(getActivity());
+						t.setTextColor(0xFFB0B0B0);
 						t.setText(r.text().trim());
 						conversationAvatarList[i] = t;
 					}
@@ -107,7 +108,6 @@ public class ConversationListFragment extends Fragment
 						conversationAvatarList[i] = Methods.getDrawableByUrl(avatar.get(i * 2).absUrl("src"));
 					}
 				}
-				//handler.sendEmptyMessage(1);
 				handler.sendEmptyMessage(2);
 			}
 			catch (Exception e)
