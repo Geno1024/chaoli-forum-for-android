@@ -1,6 +1,7 @@
 package com.geno.chaoli.forum;
 
 import android.app.Activity;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,10 +28,10 @@ import java.lang.ref.WeakReference;
 @SuppressWarnings("HandlerLeak")
 public class ConversationListFragment extends Fragment
 {
-	public String[] conversationTitleList = new String[/*SettingsConstants.getConvPerPage(getActivity())*/50];
+	public String[] conversationTitleList = new String[/*Constants.getConvPerPage(getActivity())*/50];
 	public String[] conversationSumList = new String[50];
-	public String[] conversationAuthorList = new String[50];
-	public Drawable[] conversationAvatarList = new Drawable[50];
+	public String[] conversationAuthorList = new String[51];
+	public Drawable[] conversationAvatarList = new Drawable[51];
 
 	public ViewGroup cont;
 
@@ -60,14 +61,14 @@ public class ConversationListFragment extends Fragment
 					cont.removeAllViews();
 					break;
 				case 2:
-					Log.v("Draw", "Start");
+					Log.v(Constants.tagDraw, Constants.statusStart);
 					for (int i = 0; i < conversationTitleList.length; i++)
 					{
 						conversationViewList[i] = new ConversationView(getActivity());
 						l.addView(conversationViewList[i], ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 						conversationViewList[i].setConvTitle(conversationTitleList[i]).setConvSum(conversationSumList[i]).setAuthor(conversationAuthorList[i]).setAvatar(conversationAvatarList[i]);
 					}
-					Log.v("Draw", "End");
+					Log.v(Constants.tagDraw, Constants.statusFinish);
 			}
 		}
 	}
@@ -81,9 +82,9 @@ public class ConversationListFragment extends Fragment
 		{
 			try
 			{
-				Log.v("Network", "Start");
+				Log.v(Constants.tagNetwork, Constants.statusFinish);
 				Document doc = Jsoup.connect("https://chaoli.club").timeout(30000).get();
-				Log.v("Network", "Finish");
+				Log.v(Constants.tagNetwork, "Finish");
 				Elements titles = doc.select("strong.title");
 				Elements sums = doc.select("div.excerpt");
 				Elements authors = doc.select("span.lastPostMember");
@@ -92,20 +93,28 @@ public class ConversationListFragment extends Fragment
 				for (int i = 0; i < 50; i++)
 				{
 					conversationTitleList[i] = titles.get(i).text().trim();
+					Log.i(Constants.msgTitle, i + ". " + conversationTitleList[i]);
 					conversationSumList[i] = sums.get(i).text().trim();
+					Log.i(Constants.msgSum, i + ". " + conversationSumList[i]);
 					conversationAuthorList[i] = authors.get(i * 2).text().trim();
+					Log.i(Constants.msgAuthor, i + ". " + conversationAuthorList[i]);
 					Element r = avatar.get(i * 2);
 					String g = r.absUrl("src");
 					if (g.equals(""))
 					{
 						TextDrawable t = new TextDrawable(getActivity());
 						t.setTextColor(0xFFB0B0B0);
+						Canvas c = new Canvas();
+						c.drawColor(0xFFB0B0B0);
+						t.draw(c);
 						t.setText(r.text().trim());
 						conversationAvatarList[i] = t;
+						Log.i(Constants.msgAvatar, i + ". " + r.text().trim());
 					}
 					else
 					{
-						conversationAvatarList[i] = Methods.getDrawableByUrl(avatar.get(i * 2).absUrl("src"));
+						conversationAvatarList[i] = Methods.getDrawableByUrl(g);
+						Log.i(Constants.msgAvatar, i + ". " + g);
 					}
 				}
 				handler.sendEmptyMessage(2);
