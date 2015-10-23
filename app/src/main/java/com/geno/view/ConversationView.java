@@ -8,39 +8,55 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.geno.chaoli.forum.R;
+import com.geno.nodes.ConversationStruct;
 
 public class ConversationView extends RelativeLayout
 {
-	private ImageView avatar;
 	private TextView author;
+	private ImageView authorAvatar;
+	private TextView lastReply;
+	private ImageView lastReplyAvatar;
 	private TextView convTitle;
 	private TextView convSummary;
+	private TextView lastReplyTime;
+	private TextView replyCount;
+	private TextView category;
+
+	public ConversationView(Context context, ConversationStruct struct)
+	{
+		super(context);
+		init(context, struct);
+	}
 
 	public ConversationView(Context context)
 	{
 		super(context);
+		init(context, null);
+	}
+
+	private void init(Context context, ConversationStruct struct)
+	{
 		View.inflate(context, R.layout.conversationview, this);
-		avatar = (ImageView) findViewById(R.id.avatar);
 		author = (TextView) findViewById(R.id.author);
+		authorAvatar = (ImageView) findViewById(R.id.authorAvatar);
+		//lastReply = (TextView) findViewById(R.id.lastReply);
 		convTitle = (TextView) findViewById(R.id.convTitle);
 		convSummary = (TextView) findViewById(R.id.convSummary);
+		if (struct != null)
+		{
+			author.setText(struct.getAuthor());
+		}
 	}
 
-	public ConversationView setAvatar(Drawable d)
+	public ConversationView setAuthorAvatar(Drawable d)
 	{
-		this.avatar.setImageDrawable(d);
+		this.authorAvatar.setImageDrawable(d);
 		return this;
 	}
 
-	public ConversationView setAvatar(ImageView v)
+	public Drawable getauthorAvatar()
 	{
-		this.avatar = v;
-		return this;
-	}
-
-	public Drawable getAvatar()
-	{
-		return this.avatar.getDrawable();
+		return this.authorAvatar.getDrawable();
 	}
 
 	public ConversationView setAuthor(String author)

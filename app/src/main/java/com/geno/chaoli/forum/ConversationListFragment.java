@@ -65,7 +65,7 @@ public class ConversationListFragment extends Fragment
 					{
 						conversationViewList[i] = new ConversationView(getActivity());
 						l.addView(conversationViewList[i], ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-						conversationViewList[i].setConvTitle(conversationTitleList[i]).setConvSum(conversationSumList[i]).setAuthor(conversationAuthorList[i]).setAvatar(conversationAvatarList[i]);
+						conversationViewList[i].setConvTitle(conversationTitleList[i]).setConvSum(conversationSumList[i]).setAuthor(conversationAuthorList[i]).setAuthorAvatar(conversationAvatarList[i]);
 					}
 					Log.v(Constants.tagDraw, Constants.statusFinish);
 			}
